@@ -52,7 +52,7 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
 
 ## Current Progress & Project Journal (Building in Public)
 
-*   **Day 0 (2025-06-07):** Announced the project and #BuildingInPublic challenge on LinkedIn!
+*   **Day 0 (2025-06-07):** Announced the project and #BuildingInPublic challenge on [LinkedIn](https://www.linkedin.com/posts/kedbin_devops-firebase-react-activity-7337235733562257408-_Unp?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)!
 *   **Day 1 (2025-06-08):**
     *   Successfully set up the public GitHub monorepo.
     *   Initialized the frontend (React/Vite/TypeScript) and backend (Node.js/Express) project shells.
@@ -60,7 +60,7 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
     *   Implemented the critical first security step: `.env.example` files for environment variable management and ensured `.env` is in `.gitignore`.
     *   Created a basic placeholder CI workflow in GitHub Actions (`.github/workflows/ci.yml`) to verify pipeline functionality.
     *   Updated this README to reflect the project's vision and current status.
-    *   [Link to your LinkedIn post for Day 1]
+    *   [LinkedIn Day 1 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-aidevops-activity-7337573588096512001-lflS?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
 *   **Day 2 (Planned):** Implement Google Authentication (Firebase) on the frontend and secure backend API endpoints.
 *   *(...more days will be added here as the project progresses...)*
 
