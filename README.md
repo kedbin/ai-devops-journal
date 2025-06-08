@@ -52,8 +52,8 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
 
 ## Current Progress & Project Journal (Building in Public)
 
-*   **Day 0 (YYYY-MM-DD):** Announced the project and #BuildingInPublic challenge on LinkedIn! [Link to your LinkedIn post for Day 0]
-*   **Day 1 ([TODAY'S DATE]):**
+*   **Day 0 (2025-06-07):** Announced the project and #BuildingInPublic challenge on LinkedIn!
+*   **Day 1 (2025-06-08):**
     *   Successfully set up the public GitHub monorepo.
     *   Initialized the frontend (React/Vite/TypeScript) and backend (Node.js/Express) project shells.
     *   Established the foundational monorepo directory structure (`frontend/`, `backend/`, `.github/workflows/`).
