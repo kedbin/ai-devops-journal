@@ -61,9 +61,15 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
     *   Created a basic placeholder CI workflow in GitHub Actions (`.github/workflows/ci.yml`) to verify pipeline functionality.
     *   Updated this README to reflect the project's vision and current status.
     *   [LinkedIn Day 1 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-aidevops-activity-7337573588096512001-lflS?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
-*   **Day 2 (Planned):** Implement Google Authentication (Firebase) on the frontend and secure backend API endpoints.
+*   **Day 2 (2025-06-09):**
+    *   Implemented the full end-to-end authentication flow using **Firebase Authentication (Google Sign-In)**.
+    *   Built a secure backend "gatekeeper" middleware to validate Firebase ID tokens on protected API routes.
+    *   Created a React UI to manage login/logout state and test the secure endpoint.
+    *   Introduced **Docker Compose** to manage the multi-container (frontend, backend) local development environment, simplifying setup and ensuring consistent networking.
+    *   Debugged and resolved **CORS** and Docker networking issues, establishing a robust local development workflow.
+    *   [Link to your LinkedIn Day 2 Post]
+*   **Day 3 (Planned):** Implement automated tests for the authentication middleware and begin work on the camera/image capture feature on the frontend.
 *   *(...more days will be added here as the project progresses...)*
-
 ## Architecture Diagram
 *(Coming Soon - A visual representation of the system components and data flow will be added here.)*
 
@@ -71,7 +77,46 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
 *(Coming Soon - Details of the automated build, test, and deployment pipeline using GitHub Actions will be documented here.)*
 
 ## Getting Started / How to Run (Locally)
-*(Coming Soon - Instructions for cloning, setting up environment variables, and running the project locally will be provided here.)*
+This project uses Docker and Docker Compose to streamline the local development setup.
+
+### Prerequisites
+*   [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
+*   [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for cloning the repository.
+*   A Google account for testing the authentication flow.
+
+### Setup Instructions
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/ocr-journal-pwa.git
+    cd ocr-journal-pwa
+    ```
+
+2.  **Set up Backend Environment Variables:**
+    *   Navigate to the Firebase Console, create a project, and enable Google Authentication.
+    *   Go to **Project settings > Service accounts** and click **"Generate new private key"**.
+    *   Rename the downloaded file to `service-account-key.json` and place it inside the `backend/` directory.
+    *   **This file is crucial and is correctly ignored by `.gitignore`.**
+
+3.  **Set up Frontend Environment Variables:**
+    *   In the Firebase Console, go to **Project settings > General**.
+    *   Under "Your apps", register a new Web app.
+    *   Create a file named `.env` inside the `frontend/` directory (`frontend/.env`).
+    *   Copy the `firebaseConfig` values from the Firebase Console into your `frontend/.env` file. Use the `frontend/.env.example` file as a template. The `VITE_BACKEND_API_URL` should be `http://localhost:8081/api/v1` for the Docker Compose setup.
+
+4.  **Build and Run with Docker Compose:**
+    *   From the root directory of the project (where `docker-compose.yml` is located), run the following command:
+    ```bash
+    docker-compose up --build
+    ```
+    *   This will build the Docker images for both the frontend and backend, install their dependencies, and start the services.
+
+5.  **Access the Application:**
+    *   **Frontend:** Open your browser and navigate to `http://localhost:8080`.
+    *   **Backend Health Check:** You can check if the backend is running by visiting `http://localhost:8081/api/v1/health`.
+
+### Stopping the Application
+To stop the services, press `Ctrl+C` in the terminal where Docker Compose is running. To remove the containers, you can run `docker-compose down`.*(Coming Soon - Instructions for cloning, setting up environment variables, and running the project locally will be provided here.)*
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
