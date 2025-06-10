@@ -1,0 +1,39 @@
+# docker-compose.yml
+
+version: '3.8' # Specifies the version of the Docker Compose file format
+
+services:
+  # Define our backend service
+  backend:
+    image: node:22-alpine
+    container_name: ocr_journal_backend
+    working_dir: /app/backend
+    volumes:
+      - ./backend:/app/backend # Mount the backend code into the container
+    ports:
+      - "8081:3001" # Map host port 8080 to container port 3001
+    environment:
+      # We can pass environment variables directly here
+      - PORT=3001
+      - GOOGLE_APPLICATION_CREDENTIALS=./service-account-key.json
+    # The command to run when the container starts
+    command: sh -c "npm install && node index.js"
+
+  # Define our frontend service
+  frontend:
+    image: node:22-alpine
+    container_name: ocr_journal_frontend
+    working_dir: /app/frontend
+    volumes:
+      - ./frontend:/app/frontend # Mount the frontend code
+    ports:
+      - "8080:5173" # Map host port 5173 to container port 5173
+    # This environment variable now points to the backend *by its service name*
+    environment:
+      - VITE_BACKEND_API_URL=http://localhost:8081/api/v1 
+    command: sh -c "npm install && npm run dev -- --host"
+    # This makes the service dependent on the backend starting first
+    depends_on:
+      - backend
+
+# Docker Compose will automatically create a network that both services share
