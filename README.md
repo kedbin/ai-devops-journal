@@ -89,8 +89,8 @@ This project uses Docker and Docker Compose to streamline the local development 
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/ocr-journal-pwa.git
-    cd ocr-journal-pwa
+    git clone https://github.com/kedbin/ai-devops-journal.git
+    cd ai-devops-journal
     ```
 
 2.  **Set up Backend Environment Variables:**
