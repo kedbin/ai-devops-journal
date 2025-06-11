@@ -1,7 +1,8 @@
 # AI-Powered OCR Journaling Application 📝✨
 
       
-**Status:** Day 2 - End-to-End Authentication & Docker Compose Setup Complete 🔐🐳
+**Status:** Day 3 - Image Capture & Client-Side Optimization Implemented 📸⚡
+
 
 Welcome! This is a 2-week sprint project focused on building a secure, AI-enhanced Progressive Web App (PWA) for journaling. More importantly, this project aims to showcase and train skills in **AI DevOps**, emphasizing **Shift Left** principles (Security, Testing, Observability from the start) and a robust **CI/CD Pipeline**.
 
@@ -68,8 +69,13 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
     *   Created a React UI to manage login/logout state and test the secure endpoint.
     *   Introduced **Docker Compose** to manage the multi-container (frontend, backend) local development environment, simplifying setup and ensuring consistent networking.
     *   Debugged and resolved **CORS** and Docker networking issues, establishing a robust local development workflow.
-    *   [Link to your LinkedIn Day 2 Post]
-*   **Day 3 (Planned):** Implement automated tests for the authentication middleware and begin work on the camera/image capture feature on the frontend.
+    *   [LinkedIn Day 2 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-docker-activity-7338063201248391168-rPrL?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
+*   **Day 3 ([TODAY'S DATE]):**
+    *   Implemented the core image capture feature using the `react-webcam` library on the frontend.
+    *   Created a new secure backend endpoint (`/api/v1/process`) to receive the image data for future processing.
+    *   **SRE/DevOps Focus:** Implemented **client-side image optimization** before uploading. The captured image is resized and compressed using an HTML canvas, drastically reducing the payload size to improve performance and lower future cloud costs.
+    *   Resolved a `413 Payload Too Large` error by correctly configuring the Express.js middleware body size limits, a key infrastructure-level fix.
+*   **Day 4 (Planned):** Integrate **Azure AI Vision (OCR)** service on the backend to process the received image and extract handwritten text.
 *   *(...more days will be added here as the project progresses...)*
 ## Architecture Diagram
 *(Coming Soon - A visual representation of the system components and data flow will be added here.)*
