@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { auth, signInWithGoogle } from './firebase';
 import type { User } from './firebase';
 import './App.css'; // Or your preferred styling
+import { ImageCapture } from './ImageCapture'; // <-- IMPORT aT TOP
 
 function App() {
   // State to hold the current user object
@@ -94,6 +94,8 @@ function App() {
               {secureMessage && <p style={{ color: 'lightgreen' }}>{secureMessage}</p>}
               {error && <p style={{ color: 'salmon' }}>Error: {error}</p>}
             </div>
+            <hr style={{ margin: '2rem 0' }} />
+            <ImageCapture />
           </div>
         ) : (
           <div>
