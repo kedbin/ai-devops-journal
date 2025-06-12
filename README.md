@@ -70,12 +70,19 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
     *   Introduced **Docker Compose** to manage the multi-container (frontend, backend) local development environment, simplifying setup and ensuring consistent networking.
     *   Debugged and resolved **CORS** and Docker networking issues, establishing a robust local development workflow.
     *   [LinkedIn Day 2 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-docker-activity-7338063201248391168-rPrL?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
-*   **Day 3 ([TODAY'S DATE]):**
+*   **Day 3 (06-10-2025):**
     *   Implemented the core image capture feature using the `react-webcam` library on the frontend.
     *   Created a new secure backend endpoint (`/api/v1/process`) to receive the image data for future processing.
     *   **SRE/DevOps Focus:** Implemented **client-side image optimization** before uploading. The captured image is resized and compressed using an HTML canvas, drastically reducing the payload size to improve performance and lower future cloud costs.
     *   Resolved a `413 Payload Too Large` error by correctly configuring the Express.js middleware body size limits, a key infrastructure-level fix.
-*   **Day 4 (Planned):** Integrate **Azure AI Vision (OCR)** service on the backend to process the received image and extract handwritten text.
+    *   [Linked in Day 3 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-reactjs-activity-7338400360778055681-n5iV?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
+*   **Day 4 (06-11-2025):**
+    *   Successfully integrated **Azure AI Vision** on the backend to perform OCR on the uploaded images.
+    *   Architected the integration with a dedicated, observable service file (`azureOcrService.js`) for clean, maintainable code.
+    *   Implemented **structured, contextual logging** around the external API call to track performance (duration) and success/failure rates.
+    *   Debugged and resolved a series of real-world integration issues, from SDK version mismatches (`client.analyze is not a function`) to URL formatting (`Invalid URL`).
+    *   **Performance Tuning:** Tuned the client-side image optimization parameters (resolution and compression quality) to improve OCR accuracy, demonstrating the trade-off between performance and AI model effectiveness.
+*   **Day 5 (Planned):** Integrate **Google Gemini LLM** to take the raw OCR output and clean it up—correcting errors, improving grammar, and formatting it nicely.
 *   *(...more days will be added here as the project progresses...)*
 ## Architecture Diagram
 *(Coming Soon - A visual representation of the system components and data flow will be added here.)*
