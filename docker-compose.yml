@@ -1,7 +1,3 @@
-# docker-compose.yml
-
-version: '3.8' # Specifies the version of the Docker Compose file format
-
 services:
   # Define our backend service
   backend:

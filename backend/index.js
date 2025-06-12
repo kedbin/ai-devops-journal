@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-
+const { extractTextFromImage } = require('./services/azureOcrService');
 const verifyFirebaseToken = require('./authMiddleware'); // Import our robust auth middleware
 
 
@@ -27,29 +27,29 @@ app.get('/api/v1/secure-data', verifyFirebaseToken, (req, res) => {
   });
 });
 
-// NEW: The main image processing endpoint
-app.post('/api/v1/process', verifyFirebaseToken, (req, res) => {
-  // Today, we are just building a stub to confirm we receive the image.
-  // The 'image' property will contain the base64 string from the frontend.
+// The main image processing endpoint
+app.post('/api/v1/process', verifyFirebaseToken, async (req, res) => {
   const { image } = req.body;
 
   if (!image) {
     return res.status(400).json({ error: 'No image data provided.' });
   }
 
-  // SRE thinking: Log metadata, not the whole image!
-  console.log(`Received image for user: ${req.user.uid}. Image size (base64 length): ${image.length}`);
+  try {
+    // Call our new, isolated service function
+    const extractedText = await extractTextFromImage(image, req.user.uid);
 
-  // In a future step, we'll send this 'image' to the Azure OCR service.
-  // For now, just send a success response.
-  res.status(200).json({
-    message: 'Image received successfully. Processing will begin shortly.',
-    // We can echo back some metadata
-    imageSize: image.length,
-    userId: req.user.uid,
-  });
+    // Send the successful result back to the frontend
+    res.status(200).json({
+      message: 'Image processed successfully.',
+      ocrResult: extractedText,
+    });
+  } catch (error) {
+    // Our service threw a user-friendly error, so we can send it
+    // The detailed error was already logged by the service itself
+    res.status(500).json({ error: error.message });
+  }
 });
-
 
 // Catch-all for undefined routes (optional, but good for seeing if something is wrong)
 app.use((req, res) => {
