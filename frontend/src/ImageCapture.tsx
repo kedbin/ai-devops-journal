@@ -97,7 +97,7 @@ export const ImageCapture = () => {
       }
 
       setStatusMessage(`Success: ${result.message}`);
-      setOcrText(result.ocrResult);
+      setOcrText(result.cleanedResult);
       setImgSrc(null);
     } catch (err: any) {
       setStatusMessage(`Error: ${err.message}`);
@@ -121,7 +121,7 @@ export const ImageCapture = () => {
     <div className="capture-container">
       {ocrText ? (
         <div className="result-container">
-          <h3>Extracted Text:</h3>
+          <h3>Cleaned Up Journal Entry:</h3>
           <textarea readOnly value={ocrText} rows={15} style={{width: '90%', fontSize: '1rem'}}></textarea>
           <button onClick={processAnother}>Process Another Image</button>
         </div>

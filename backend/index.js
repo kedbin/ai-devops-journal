@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const { extractTextFromImage } = require('./services/azureOcrService');
 const verifyFirebaseToken = require('./authMiddleware'); // Import our robust auth middleware
+const { cleanUpText } = require('./services/googleLlmService');
 
 
 const app = express();
@@ -30,6 +31,7 @@ app.get('/api/v1/secure-data', verifyFirebaseToken, (req, res) => {
 // The main image processing endpoint
 app.post('/api/v1/process', verifyFirebaseToken, async (req, res) => {
   const { image } = req.body;
+  let rawOcrText = ''; // Initialize rawOcrText to store the OCR result
 
   if (!image) {
     return res.status(400).json({ error: 'No image data provided.' });
@@ -38,13 +40,17 @@ app.post('/api/v1/process', verifyFirebaseToken, async (req, res) => {
   try {
     // Call our new, isolated service function
     const extractedText = await extractTextFromImage(image, req.user.uid);
+    const cleanedText = await cleanUpText(extractedText, req.user.uid);
+
 
     // Send the successful result back to the frontend
-    res.status(200).json({
-      message: 'Image processed successfully.',
-      ocrResult: extractedText,
+     res.status(200).json({
+      message: 'Image processed and text cleaned successfully.',
+      cleanedResult: cleanedText, // Send the cleaned text
+      rawResult: rawOcrText, // Also send the raw text for comparison/debugging
     });
-  } catch (error) {
+
+ } catch (error) {
     // Our service threw a user-friendly error, so we can send it
     // The detailed error was already logged by the service itself
     res.status(500).json({ error: error.message });
