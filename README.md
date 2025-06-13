@@ -1,8 +1,7 @@
 # AI-Powered OCR Journaling Application 📝✨
 
       
-**Status:** Day 3 - Image Capture & Client-Side Optimization Implemented 📸⚡
-
+**Status:** Day 5 - LLM Text Enhancement & AI Orchestration Implemented 🧠🔗
 
 Welcome! This is a 2-week sprint project focused on building a secure, AI-enhanced Progressive Web App (PWA) for journaling. More importantly, this project aims to showcase and train skills in **AI DevOps**, emphasizing **Shift Left** principles (Security, Testing, Observability from the start) and a robust **CI/CD Pipeline**.
 
@@ -82,7 +81,13 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
     *   Implemented **structured, contextual logging** around the external API call to track performance (duration) and success/failure rates.
     *   Debugged and resolved a series of real-world integration issues, from SDK version mismatches (`client.analyze is not a function`) to URL formatting (`Invalid URL`).
     *   **Performance Tuning:** Tuned the client-side image optimization parameters (resolution and compression quality) to improve OCR accuracy, demonstrating the trade-off between performance and AI model effectiveness.
-*   **Day 5 (Planned):** Integrate **Google Gemini LLM** to take the raw OCR output and clean it up—correcting errors, improving grammar, and formatting it nicely.
+    *   [Linked in Day 4 Post](https://www.linkedin.com/posts/kedbin_aidevops-ocr-azureai-activity-7338812297563295744-sUk7?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
+*   **Day 5 (06-12-2025):**
+    *   Integrated the **Google Gemini LLM** to enhance the raw OCR output. The LLM acts as an intelligent editor, correcting spelling, grammar, and punctuation.
+    *   **SRE/DevOps Focus:** Successfully orchestrated a **multi-step AI pipeline** (Azure OCR -> Google LLM). Implemented differentiated, structured logging to time each external API call separately for clear performance observability.
+    *   Engineered a **resilient fallback mechanism**: If the LLM service fails, the backend now gracefully returns the raw OCR text instead of a hard error, improving the user experience.
+    *   Practiced **Prompt Engineering** to give the LLM clear, structured instructions for the text cleanup task.
+*   **Day 6 (Planned):** Generate and store the final output. Implement PDF/Markdown file generation and upload the results to **Firebase Cloud Storage**.
 *   *(...more days will be added here as the project progresses...)*
 ## Architecture Diagram
 *(Coming Soon - A visual representation of the system components and data flow will be added here.)*
