@@ -10,25 +10,24 @@ const videoConstraints = {
   facingMode: 'environment'
 };
 
-// --- THE TUNED PARAMETERS ---
 const IMAGE_MAX_WIDTH = 3000;
-const IMAGE_COMPRESSION_QUALITY = 0.95; // 95% quality
+const IMAGE_COMPRESSION_QUALITY = 1.0;
 
 export const ImageCapture = () => {
   const webcamRef = useRef<Webcam>(null);
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>('');
-  const [ocrText, setOcrText] = useState<string>('');
+  const [downloadUrl, setDownloadUrl] = useState<string>(''); 
 
   const captureAndProcess = useCallback(async () => {
     if (!webcamRef.current) return;
     setIsProcessing(true);
     setStatusMessage('Capturing image...');
-    setOcrText('');
+    setDownloadUrl(''); // Clear previous download URL when starting a new capture
 
     const rawImageSrc = webcamRef.current.getScreenshot({
-        width: 1920, // Ask for a higher resolution capture if possible
+        width: 1920, // Request higher capture resolution
         height: 1080
     });
     if (!rawImageSrc) {
@@ -57,7 +56,6 @@ export const ImageCapture = () => {
           return;
         }
         ctx.drawImage(img, 0, 0, width, height);
-        // Use the new, higher quality setting
         const compressedDataUrl = canvas.toDataURL('image/jpeg', IMAGE_COMPRESSION_QUALITY);
         resolve(compressedDataUrl);
       };
@@ -97,8 +95,9 @@ export const ImageCapture = () => {
       }
 
       setStatusMessage(`Success: ${result.message}`);
-      setOcrText(result.cleanedResult);
-      setImgSrc(null);
+      setDownloadUrl(result.markdownUrl); // Store the secure download URL
+      setImgSrc(null); // Hide the captured image preview
+      
     } catch (err: any) {
       setStatusMessage(`Error: ${err.message}`);
     } finally {
@@ -109,38 +108,46 @@ export const ImageCapture = () => {
   const retakePhoto = () => {
     setImgSrc(null);
     setStatusMessage('');
-    setOcrText('');
+    setDownloadUrl(''); 
   };
 
   const processAnother = () => {
-    setOcrText('');
-    setStatusMessage('');
+    console.log("Process Another clicked. Initiating full state reset."); // Debugging log
+    setDownloadUrl(''); 
+    setImgSrc(null);    
+    setIsProcessing(false); 
+    setStatusMessage('');   
   };
 
   return (
     <div className="capture-container">
-      {ocrText ? (
+      {downloadUrl ? (
         <div className="result-container">
-          <h3>Cleaned Up Journal Entry:</h3>
-          <textarea readOnly value={ocrText} rows={15} style={{width: '90%', fontSize: '1rem'}}></textarea>
-          <button onClick={processAnother}>Process Another Image</button>
+          <h3>Entry Saved!</h3>
+          <p>Your journal entry has been processed and saved securely.</p>
+          <a href={downloadUrl} className="button" target="_blank" rel="noopener noreferrer">
+            Download .md File
+          </a>
+          <button onClick={processAnother} style={{marginLeft: '10px'}}>Process Another</button>
         </div>
-      ) : imgSrc ? (
+      ) : imgSrc ? ( 
         <>
           <img src={imgSrc} alt="Captured" />
           <button onClick={retakePhoto} disabled={isProcessing}>Retake Photo</button>
         </>
-      ) : (
+      ) : ( 
         <Webcam
           audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           videoConstraints={videoConstraints}
           screenshotQuality={1}
+          // The key ensures Webcam remounts for a fresh start when its state context changes
+          key={downloadUrl || imgSrc ? 'result-or-preview' : 'camera-view'} 
         />
       )}
       <div className="controls">
-        {!imgSrc && !ocrText && (
+        {!imgSrc && !downloadUrl && ( 
           <button onClick={captureAndProcess} disabled={isProcessing}>Capture photo</button>
         )}
         {isProcessing && <p>Processing...</p>}

@@ -1,27 +1,26 @@
 const admin = require('firebase-admin');
 
+// --- The configuration object that now includes the storageBucket ---
+const appConfig = {
+  // Use the service account file for credentials. The SDK is smart
+  // enough to find this via the GOOGLE_APPLICATION_CREDENTIALS env var.
+  credential: admin.credential.applicationDefault(),
+
+  // --- THIS IS THE FIX ---
+  // Explicitly provide the storage bucket URL from our .env file.
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+};
+
 try {
   // The SDK will automatically look for the GOOGLE_APPLICATION_CREDENTIALS
   // environment variable and use the file path from there.
   // This is the preferred way for local and some cloud environments.
-  admin.initializeApp();
-  console.log('Firebase Admin SDK initialized successfully.');
+  admin.initializeApp(appConfig);
+  console.log('Firebase Admin SDK initialized successfully with Storage.');
 } catch (error) {
-  // This is a more robust way to handle initialization in production environments
-  // where you might set individual env vars instead of a file.
-  if (process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      }),
-    });
-    console.log('Firebase Admin SDK initialized successfully from environment variables.');
-  } else {
-    console.error('Firebase Admin initialization failed. Ensure GOOGLE_APPLICATION_CREDENTIALS or individual Firebase Admin environment variables are set.', error);
-    process.exit(1); // Exit the process if we can't connect to Firebase Admin
-  }
+  console.error('Firebase Admin initialization failed.', error);
+  // Fail fast if we can't initialize the core services.
+  process.exit(1);
 }
 
 module.exports = admin;

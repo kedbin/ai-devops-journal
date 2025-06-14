@@ -10,7 +10,7 @@ if (!apiKey) {
 
 // Initialize the clients
 const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20" }); // Use the fast and capable model
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20"}); // Use the fast and capable model
 
 // --- SRE: Defensive, Observable Function ---
 async function cleanUpText(rawText, userId) {
@@ -39,14 +39,14 @@ async function cleanUpText(rawText, userId) {
   Your task is to:
   1. Correct spelling and grammatical errors.
   2. Fix punctuation and capitalization.
-  3. Retain the original meaning, tone, and informal voice of the author. Do not add new ideas, headers, or embellishments.
+  3. Retain the original meaning and context of the text. However make it more readable and coherent.
   4. Preserve line breaks where they seem intentional for separating thoughts or paragraphs.
 
   Here is the raw text:
   ---
   ${rawText}
   ---
-  Return only the cleaned-up text.`;
+  Return only the cleaned up text.`;
 
   const startTime = Date.now(); // SRE: Start timer
 
