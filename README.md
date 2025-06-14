@@ -1,7 +1,7 @@
 # AI-Powered OCR Journaling Application 📝✨
 
       
-**Status:** Day 5 - LLM Text Enhancement & AI Orchestration Implemented 🧠🔗
+**Status:** Day 6 - Markdown Storage & AI Quality Refinement Complete 💾✨
 
 Welcome! This is a 2-week sprint project focused on building a secure, AI-enhanced Progressive Web App (PWA) for journaling. More importantly, this project aims to showcase and train skills in **AI DevOps**, emphasizing **Shift Left** principles (Security, Testing, Observability from the start) and a robust **CI/CD Pipeline**.
 
@@ -61,33 +61,36 @@ Journaling on paper is a joy, especially for those who appreciate the tactile fe
     *   Implemented the critical first security step: `.env.example` files for environment variable management and ensured `.env` is in `.gitignore`.
     *   Created a basic placeholder CI workflow in GitHub Actions (`.github/workflows/ci.yml`) to verify pipeline functionality.
     *   Updated this README to reflect the project's vision and current status.
-    *   [LinkedIn Day 1 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-aidevops-activity-7337573588096512001-lflS?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
 *   **Day 2 (2025-06-09):**
     *   Implemented the full end-to-end authentication flow using **Firebase Authentication (Google Sign-In)**.
     *   Built a secure backend "gatekeeper" middleware to validate Firebase ID tokens on protected API routes.
     *   Created a React UI to manage login/logout state and test the secure endpoint.
     *   Introduced **Docker Compose** to manage the multi-container (frontend, backend) local development environment, simplifying setup and ensuring consistent networking.
     *   Debugged and resolved **CORS** and Docker networking issues, establishing a robust local development workflow.
-    *   [LinkedIn Day 2 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-docker-activity-7338063201248391168-rPrL?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
 *   **Day 3 (06-10-2025):**
     *   Implemented the core image capture feature using the `react-webcam` library on the frontend.
     *   Created a new secure backend endpoint (`/api/v1/process`) to receive the image data for future processing.
     *   **SRE/DevOps Focus:** Implemented **client-side image optimization** before uploading. The captured image is resized and compressed using an HTML canvas, drastically reducing the payload size to improve performance and lower future cloud costs.
     *   Resolved a `413 Payload Too Large` error by correctly configuring the Express.js middleware body size limits, a key infrastructure-level fix.
-    *   [Linked in Day 3 Post](https://www.linkedin.com/posts/kedbin_aidevops-devsecops-reactjs-activity-7338400360778055681-n5iV?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
 *   **Day 4 (06-11-2025):**
     *   Successfully integrated **Azure AI Vision** on the backend to perform OCR on the uploaded images.
     *   Architected the integration with a dedicated, observable service file (`azureOcrService.js`) for clean, maintainable code.
     *   Implemented **structured, contextual logging** around the external API call to track performance (duration) and success/failure rates.
     *   Debugged and resolved a series of real-world integration issues, from SDK version mismatches (`client.analyze is not a function`) to URL formatting (`Invalid URL`).
     *   **Performance Tuning:** Tuned the client-side image optimization parameters (resolution and compression quality) to improve OCR accuracy, demonstrating the trade-off between performance and AI model effectiveness.
-    *   [Linked in Day 4 Post](https://www.linkedin.com/posts/kedbin_aidevops-ocr-azureai-activity-7338812297563295744-sUk7?utm_source=share&utm_medium=member_desktop&rcm=ACoAADWdGnQB43otM8dW-BAKktayOd_uRPLEB7c)
 *   **Day 5 (06-12-2025):**
     *   Integrated the **Google Gemini LLM** to enhance the raw OCR output. The LLM acts as an intelligent editor, correcting spelling, grammar, and punctuation.
     *   **SRE/DevOps Focus:** Successfully orchestrated a **multi-step AI pipeline** (Azure OCR -> Google LLM). Implemented differentiated, structured logging to time each external API call separately for clear performance observability.
     *   Engineered a **resilient fallback mechanism**: If the LLM service fails, the backend now gracefully returns the raw OCR text instead of a hard error, improving the user experience.
     *   Practiced **Prompt Engineering** to give the LLM clear, structured instructions for the text cleanup task.
-*   **Day 6 (Planned):** Generate and store the final output. Implement PDF/Markdown file generation and upload the results to **Firebase Cloud Storage**.
+*   **Day 6 ([TODAY'S DATE]):**
+    *   Implemented **secure Markdown file storage** in **Firebase Cloud Storage**.
+    *   Configured Firebase Storage Security Rules to ensure users can only access their own files, adhering to the Principle of Least Privilege.
+    *   The backend now generates a Markdown file from the cleaned text, uploads it to Cloud Storage, and returns a secure, time-limited download URL to the frontend.
+    *   The frontend UI has been updated to provide a "Download .md File" button for the generated journal entry.
+    *   **SRE/DevOps Focus:** Successfully **tuned client-side image compression** (JPEG quality increased to 1.0) to significantly improve OCR accuracy, resolving issues with lost words. This highlights the trade-off between file size optimization and AI model input quality.
+    *   Resolved minor UI state management issues (e.g., "Capture photo" button visibility, "Process Another" functionality) for a smoother user experience.
+*   **Day 7 (Planned):** Generate **HUGO blog post metadata** (title, date, tags) using Google Gemini and set up the preview for blog publishing.
 *   *(...more days will be added here as the project progresses...)*
 ## Architecture Diagram
 *(Coming Soon - A visual representation of the system components and data flow will be added here.)*
