@@ -2,98 +2,113 @@
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// --- SRE: Secure Configuration & Fail Fast ---
 const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
 if (!apiKey) {
-  throw new Error("Google Gemini API key is not configured in environment variables.");
+  throw new Error("Google Gemini API key is not configured.");
 }
 
-// Initialize the clients
 const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20"}); // Use the fast and capable model
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// --- SRE: Defensive, Observable Function ---
-async function cleanUpText(rawText, userId) {
-  // SRE: Structured Logging - log the entry point
+function extractJsonFromLlmResponse(rawResponse) {
+  const jsonMatch = rawResponse.match(/```json\n([\s\S]*?)\n```/);
+  const potentialJson = jsonMatch ? jsonMatch[1] : rawResponse;
+  try {
+    return JSON.parse(potentialJson);
+  } catch (error) {
+    console.error(JSON.stringify({
+        level: 'ERROR',
+        message: 'Failed to parse JSON from LLM response',
+        rawResponse: rawResponse,
+        timestamp: new Date().toISOString()
+    }));
+    return null;
+  }
+}
+
+// --- The NEW "One-Shot" Function ---
+async function processJournalEntry(rawOcrText, userId) {
   console.log(JSON.stringify({
     level: 'INFO',
-    message: 'Starting LLM cleanup process for user',
+    message: 'Starting combined AI processing for user',
     userId: userId,
     timestamp: new Date().toISOString()
   }));
 
-  // SRE: Defensive Gate - Don't call the LLM if there's no text to process.
-  if (!rawText || rawText.trim() === '' || rawText.trim() === 'No text found in the image.') {
-    console.log(JSON.stringify({
-        level: 'WARN',
-        message: 'Skipping LLM cleanup due to empty or invalid input text.',
-        userId: userId,
-        timestamp: new Date().toISOString()
-      }));
-    return rawText; // Return the original (empty) text
+  if (!rawOcrText || rawOcrText.trim() === '') {
+    // Return a default structure if there's no input
+    return {
+        cleanedText: '',
+        title: 'Untitled Entry',
+        date: new Date().toISOString().split('T')[0],
+        tags: ['journal']
+    };
   }
 
-  // --- Prompt Engineering ---
-  // The prompt is the most critical part. It gives the LLM clear instructions.
-  const prompt = `You are a helpful assistant that cleans up raw text transcribed from a person's handwritten journal.
-  Your task is to:
-  1. Correct spelling and grammatical errors.
-  2. Fix punctuation and capitalization.
-  3. Retain the original meaning and context of the text. However make it more readable and coherent.
-  4. Preserve line breaks where they seem intentional for separating thoughts or paragraphs.
+  // --- NEW, All-in-One Prompt ---
+  const prompt = `You are an intelligent journaling assistant. Your task is to process raw OCR text from a handwritten journal and return a single, valid JSON object.
 
-  Here is the raw text:
-  ---
-  ${rawText}
-  ---
-  Return only the cleaned up text.`;
+The JSON object must have exactly four keys:
+1. "cleanedText": The OCR text, corrected for spelling, grammar, and punctuation. Retain the original tone and preserve meaningful line breaks.
+2. "title": A concise, engaging title for this journal entry, no more than 10 words.
+3. "date": Today's date in "YYYY-MM-DD" format.
+4. "tags": An array of 3 to 5 relevant, lowercase, single-word strings that categorize the entry.
 
-  const startTime = Date.now(); // SRE: Start timer
+Do not include any text, explanation, or markdown formatting outside of the main JSON object.
+
+Raw OCR Text:
+---
+${rawOcrText}
+---
+`;
+
+  const startTime = Date.now();
 
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    const cleanedText = response.text();
-    
-    const duration = Date.now() - startTime; // SRE: Calculate duration
+    const llmResponseText = response.text();
+    const duration = Date.now() - startTime;
 
-    // SRE: Log successful operation with performance metric
+    const structuredData = extractJsonFromLlmResponse(llmResponseText);
+
+    if (!structuredData || !structuredData.cleanedText || !structuredData.title || !structuredData.tags) {
+      throw new Error('LLM failed to return a valid and complete JSON object.');
+    }
+
     console.log(JSON.stringify({
-      level: 'INFO',
-      message: 'LLM cleanup successful',
-      userId: userId,
-      durationMs: duration,
-      originalLength: rawText.length,
-      cleanedLength: cleanedText.length,
-      timestamp: new Date().toISOString()
-    }));
-    
-    return cleanedText;
-
-  } catch (error) {
-    const duration = Date.now() - startTime; // SRE: Calculate duration on failure
-
-    // SRE: Log failure with context
-    console.error(JSON.stringify({
-      level: 'ERROR',
-      message: 'Google Gemini API call failed',
-      userId: userId,
-      durationMs: duration,
-      errorMessage: error.message,
-      timestamp: new Date().toISOString()
-    }));
-
-    // SRE: Don't fail the whole request. Fallback to the raw OCR text.
-    // This is a resiliency pattern. It's better to give the user uncleaned text
-    // than to give them a total failure because the LLM was down.
-    console.warn(JSON.stringify({
-        level: 'WARN',
-        message: 'Falling back to raw OCR text due to LLM error.',
+        level: 'INFO',
+        message: 'Combined AI processing successful',
         userId: userId,
+        durationMs: duration,
+        generatedTitle: structuredData.title,
         timestamp: new Date().toISOString()
     }));
-    return rawText; // Fallback to returning the original text
+    
+    // Return the entire structured object
+    return structuredData;
+
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    console.error(JSON.stringify({
+        level: 'ERROR',
+        message: 'Google Gemini API call for combined processing failed',
+        userId: userId,
+        durationMs: duration,
+        errorMessage: error.message,
+        timestamp: new Date().toISOString()
+    }));
+    
+    // As a fallback, we can't generate metadata, but we can still return the raw text.
+    // This maintains some level of resiliency.
+    return {
+        cleanedText: rawOcrText, // Fallback to raw text
+        title: 'Processing Error - Untitled',
+        date: new Date().toISOString().split('T')[0],
+        tags: ['error']
+    };
   }
 }
 
-module.exports = { cleanUpText };
+// Export only the new, powerful function
+module.exports = { processJournalEntry }; 
