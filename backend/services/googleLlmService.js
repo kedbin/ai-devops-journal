@@ -49,7 +49,7 @@ async function processJournalEntry(rawOcrText, userId) {
   const prompt = `You are an intelligent journaling assistant. Your task is to process raw OCR text from a handwritten journal and return a single, valid JSON object.
 
 The JSON object must have exactly four keys:
-1. "cleanedText": The OCR text, corrected for spelling, grammar, and punctuation. Retain the original tone and preserve meaningful line breaks.
+1. "cleanedText": The OCR text, corrected for spelling, grammar, and punctuation. Retain the original tone and structure the spacings and linebreaks suitable as a blogpost content.
 2. "title": A concise, engaging title for this journal entry, no more than 10 words.
 3. "date": Try to find a date written in the journal entry text. If you find one, format it as "YYYY-MM-DD". If you cannot find any date in the text, return an empty string ("").
 4. "tags": An array of 3 to 5 relevant, lowercase, single-word strings that categorize the entry.
