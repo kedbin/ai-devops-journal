@@ -45,10 +45,29 @@ app.post('/api/v1/process', verifyFirebaseToken, async (req, res) => {
     // Step 2: Call the "one-shot" AI processor to get everything
     const aiResult = await processJournalEntry(rawOcrText, req.user.uid);
 
+    // --- NEW LOGIC FOR DAY 7 (Date Handling) ---
+    // Step 2.5: Validate and set the date.
+    let finalDate = aiResult.date; // Start with the date from the LLM
+
+    // A simple regex to check if the date is in YYYY-MM-DD format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+    // If the LLM returned an empty string or an invalid format, use today's date.
+    if (!finalDate || !dateRegex.test(finalDate)) {
+        console.log(JSON.stringify({
+            level: 'INFO',
+            message: 'No valid date found in journal entry. Falling back to current date.',
+            userId: req.user.uid,
+            timestamp: new Date().toISOString()
+        }));
+        // Get today's date and format it as YYYY-MM-DD
+        finalDate = new Date().toISOString().split('T')[0];
+    }
+
     // Step 3: Construct the HUGO-ready Markdown file from the structured data
     const frontMatter = `---
 title: "${aiResult.title.replace(/"/g, '\\"')}"
-date: "${aiResult.date}"
+date: "${finalDate}"
 tags: [${aiResult.tags.map(tag => `"${tag}"`).join(', ')}]
 draft: true
 ---`;

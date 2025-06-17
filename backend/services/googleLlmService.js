@@ -51,7 +51,7 @@ async function processJournalEntry(rawOcrText, userId) {
 The JSON object must have exactly four keys:
 1. "cleanedText": The OCR text, corrected for spelling, grammar, and punctuation. Retain the original tone and preserve meaningful line breaks.
 2. "title": A concise, engaging title for this journal entry, no more than 10 words.
-3. "date": Today's date in "YYYY-MM-DD" format.
+3. "date": Try to find a date written in the journal entry text. If you find one, format it as "YYYY-MM-DD". If you cannot find any date in the text, return an empty string ("").
 4. "tags": An array of 3 to 5 relevant, lowercase, single-word strings that categorize the entry.
 
 Do not include any text, explanation, or markdown formatting outside of the main JSON object.
